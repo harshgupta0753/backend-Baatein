@@ -11,6 +11,7 @@ export function initializeSocket(server:any):SocketIOServer {
 const io = new SocketIOServer(server, {
     cors:{
         origin:"*",
+        methods: ["GET", "POST"]
     },
 });
 
