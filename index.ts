@@ -15,7 +15,7 @@ app.use(cors());
 app.use('/auth', authRoutes);
 
 app.get('/', (req, res) => {
-  res.send('Server is running');
+  res.send('Server is running hahahhahahaha');
 });
 
 
