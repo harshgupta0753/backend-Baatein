@@ -3,15 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-  "dev": "nodemon index.js",
-  "build": "tsc",
-  "start": "node dist/index.js"
-},
+    "dev": "nodemon index.js",
+    "start": "node index.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.2.0",
     "axios": "^1.12.2",
@@ -25,14 +24,6 @@
     "socket.io": "^4.8.1"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.3",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/mongoose": "^5.11.96",
-    "@types/node": "^24.6.2",
-    "@types/socket.io": "^3.0.1",
-    "nodemon": "^3.1.10",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "nodemon": "^3.1.10"
   }
 }
