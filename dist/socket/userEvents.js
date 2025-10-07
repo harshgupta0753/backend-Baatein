@@ -1,12 +1,7 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerUserEvents = registerUserEvents;
-const User_ts_1 = __importDefault(require("../modals/User.ts"));
-const token_ts_1 = require("../utils/token.ts");
-function registerUserEvents(io, socket) {
+import { Socket, Server as SocketIOServer } from 'socket.io';
+import User from '../modals/User.js';
+import { generateToken } from '../utils/token.js';
+export function registerUserEvents(io, socket) {
     socket.on("testSocket", (data) => {
         socket.emit("testSocket", { msg: "realtime updates working" });
     });
@@ -19,13 +14,13 @@ function registerUserEvents(io, socket) {
             });
         }
         try {
-            const updatedUser = await User_ts_1.default.findByIdAndUpdate(userId, { name: data.name, avatar: data.avatar }, { new: true });
+            const updatedUser = await User.findByIdAndUpdate(userId, { name: data.name, avatar: data.avatar }, { new: true });
             if (!updatedUser) {
                 return socket.emit("updateProfile", {
                     success: false, msg: "User not found"
                 });
             }
-            const newToken = (0, token_ts_1.generateToken)(updatedUser);
+            const newToken = generateToken(updatedUser);
             socket.emit('updateProfile', {
                 success: true,
                 data: { token: newToken },
@@ -49,7 +44,7 @@ function registerUserEvents(io, socket) {
                 });
                 return;
             }
-            const users = await User_ts_1.default.find({ _id: { $ne: currentUserId } }, { password: 0 }).lean();
+            const users = await User.find({ _id: { $ne: currentUserId } }, { password: 0 }).lean();
             const contacts = users.map((user) => ({
                 id: user._id.toString(),
                 name: user.name,

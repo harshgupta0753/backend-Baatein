@@ -2,9 +2,9 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import http from 'http';
-import connectDB from './config/db.ts';
-import authRoutes from './routes/auth.routes.ts';
-import { initializeSocket } from './socket/socket.ts';
+import connectDB from './config/db.js';
+import authRoutes from './routes/auth.routes.js';
+import { initializeSocket } from './socket/socket.js';
 dotenv.config();
 
 const app = express();

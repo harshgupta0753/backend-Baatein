@@ -1,27 +1,22 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const dotenv_1 = __importDefault(require("dotenv"));
-const cors_1 = __importDefault(require("cors"));
-const http_1 = __importDefault(require("http"));
-const db_ts_1 = __importDefault(require("./config/db.ts"));
-const auth_routes_ts_1 = __importDefault(require("./routes/auth.routes.ts"));
-const socket_ts_1 = require("./socket/socket.ts");
-dotenv_1.default.config();
-const app = (0, express_1.default)();
-app.use(express_1.default.json());
-app.use((0, cors_1.default)());
-app.use('/auth', auth_routes_ts_1.default);
+import express from 'express';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import http from 'http';
+import connectDB from './config/db.js';
+import authRoutes from './routes/auth.routes.js';
+import { initializeSocket } from './socket/socket.js';
+dotenv.config();
+const app = express();
+app.use(express.json());
+app.use(cors());
+app.use('/auth', authRoutes);
 app.get('/', (req, res) => {
     res.send('Server is running');
 });
 const PORT = process.env.PORT || 3000;
-const server = http_1.default.createServer(app);
-(0, socket_ts_1.initializeSocket)(server);
-(0, db_ts_1.default)().then(() => {
+const server = http.createServer(app);
+initializeSocket(server);
+connectDB().then(() => {
     server.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
     });

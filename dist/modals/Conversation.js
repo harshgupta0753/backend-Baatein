@@ -1,7 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = require("mongoose");
-const ConversationSchema = new mongoose_1.Schema({
+import { model, Schema } from "mongoose";
+const ConversationSchema = new Schema({
     type: {
         type: String,
         enum: ['direct', 'group'],
@@ -10,17 +8,17 @@ const ConversationSchema = new mongoose_1.Schema({
     name: String,
     participants: [
         {
-            type: mongoose_1.Schema.Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: "User",
             required: true,
         }
     ],
     lastMessage: {
-        type: mongoose_1.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "Message",
     },
     createdBy: {
-        type: mongoose_1.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "User",
     },
     avatar: {
@@ -40,4 +38,4 @@ ConversationSchema.pre("save", function (next) {
     this.updatedAt = new Date();
     next();
 });
-exports.default = (0, mongoose_1.model)("Conversation", ConversationSchema);
+export default model("Conversation", ConversationSchema);

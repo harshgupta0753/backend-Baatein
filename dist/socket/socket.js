@@ -1,18 +1,12 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.initializeSocket = initializeSocket;
-const socket_io_1 = require("socket.io");
-const dotenv_1 = __importDefault(require("dotenv"));
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const userEvents_ts_1 = require("./userEvents.ts");
-const chatEvents_ts_1 = require("./chatEvents.ts");
-const Conversation_ts_1 = __importDefault(require("../modals/Conversation.ts"));
-dotenv_1.default.config();
-function initializeSocket(server) {
-    const io = new socket_io_1.Server(server, {
+import { Server as SocketIOServer, Socket } from 'socket.io';
+import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
+import { registerUserEvents } from './userEvents.js';
+import { registerChatEvents } from './chatEvents.js';
+import Conversation from '../modals/Conversation.js';
+dotenv.config();
+export function initializeSocket(server) {
+    const io = new SocketIOServer(server, {
         cors: {
             origin: "*",
             methods: ["GET", "POST"]
@@ -23,7 +17,7 @@ function initializeSocket(server) {
         if (!token) {
             return next(new Error("Authentication error: Token not provided"));
         }
-        jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
             if (err) {
                 return next(new Error("Authentication error: Invalid token"));
             }
@@ -36,10 +30,10 @@ function initializeSocket(server) {
     io.on('connection', async (socket) => {
         const userId = socket.data.userId;
         console.log(`User connected: ${userId}, username: ${socket.data.name}`);
-        (0, chatEvents_ts_1.registerChatEvents)(io, socket);
-        (0, userEvents_ts_1.registerUserEvents)(io, socket);
+        registerChatEvents(io, socket);
+        registerUserEvents(io, socket);
         try {
-            const conversations = await Conversation_ts_1.default.find({
+            const conversations = await Conversation.find({
                 participants: userId,
             }).select("_id");
             conversations.forEach((conversation) => {

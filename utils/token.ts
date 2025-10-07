@@ -1,4 +1,4 @@
-import type { UserProps } from "../types.ts";
+import type { UserProps } from "../types.js";
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET;

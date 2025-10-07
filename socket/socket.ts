@@ -1,9 +1,9 @@
 import { Server as SocketIOServer,Socket } from 'socket.io';
 import dotenv from 'dotenv';  
 import jwt from 'jsonwebtoken';
-import { registerUserEvents } from './userEvents.ts';
-import { registerChatEvents } from './chatEvents.ts';
-import Conversation from '../modals/Conversation.ts';
+import { registerUserEvents } from './userEvents.js';
+import { registerChatEvents } from './chatEvents.js';
+import Conversation from '../modals/Conversation.js';
 
 dotenv.config();
 

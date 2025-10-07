@@ -1,6 +1,6 @@
 import { Server as SocketIOServer, Socket } from "socket.io";
-import Conversation from "../modals/Conversation.ts";
-import Message from "../modals/Message.ts";
+import Conversation from "../modals/Conversation.js";
+import Message from "../modals/Message.js";
 
 export function registerChatEvents(io: SocketIOServer, socket: Socket) {
 

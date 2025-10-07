@@ -1,12 +1,7 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerChatEvents = registerChatEvents;
-const Conversation_ts_1 = __importDefault(require("../modals/Conversation.ts"));
-const Message_ts_1 = __importDefault(require("../modals/Message.ts"));
-function registerChatEvents(io, socket) {
+import { Server as SocketIOServer, Socket } from "socket.io";
+import Conversation from "../modals/Conversation.js";
+import Message from "../modals/Message.js";
+export function registerChatEvents(io, socket) {
     socket.on("getConversations", async () => {
         console.log("getConversations event");
         try {
@@ -18,7 +13,7 @@ function registerChatEvents(io, socket) {
                 });
                 return;
             }
-            const conversations = await Conversation_ts_1.default.find({
+            const conversations = await Conversation.find({
                 participants: userId
             })
                 .sort({ updatedAt: -1 })
@@ -47,7 +42,7 @@ function registerChatEvents(io, socket) {
         console.log("newConversation event: ", data);
         try {
             if (data.type == 'direct') {
-                const existingConversation = await Conversation_ts_1.default.findOne({
+                const existingConversation = await Conversation.findOne({
                     type: 'direct',
                     participants: { $all: data.participants, $size: 2 },
                 }).populate({
@@ -62,7 +57,7 @@ function registerChatEvents(io, socket) {
                     return;
                 }
             }
-            const conversation = await Conversation_ts_1.default.create({
+            const conversation = await Conversation.create({
                 type: data.type,
                 participants: data.participants,
                 name: data.name || "",
@@ -73,7 +68,7 @@ function registerChatEvents(io, socket) {
             connectedSockets.forEach((participantSocket) => {
                 participantSocket.join(conversation._id.toString());
             });
-            const populatedConversation = await Conversation_ts_1.default.findById(conversation._id)
+            const populatedConversation = await Conversation.findById(conversation._id)
                 .populate({
                 path: "participants",
                 select: "name avatar email",
@@ -97,7 +92,7 @@ function registerChatEvents(io, socket) {
     socket.on("newMessage", async (data) => {
         console.log("newMessage event: ", data);
         try {
-            const message = await Message_ts_1.default.create({
+            const message = await Message.create({
                 conversationId: data.conversationId,
                 senderId: data.sender.id,
                 content: data.content,
@@ -118,7 +113,7 @@ function registerChatEvents(io, socket) {
                     conversationId: data.conversationId,
                 },
             });
-            await Conversation_ts_1.default.findByIdAndUpdate(data.conversationId, {
+            await Conversation.findByIdAndUpdate(data.conversationId, {
                 lastMessage: message._id,
             });
         }
@@ -133,7 +128,7 @@ function registerChatEvents(io, socket) {
     socket.on("getMessages", async (data) => {
         console.log("getMessage event: ", data);
         try {
-            const messages = await Message_ts_1.default.find({
+            const messages = await Message.find({
                 conversationId: data.conversationId,
             })
                 .sort({ createdAt: -1 })
